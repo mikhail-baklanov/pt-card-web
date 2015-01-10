@@ -20,27 +20,24 @@ import com.google.gwt.user.client.ui.Label;
 
 public class LogPanel extends FlexTable {
 
-	private PtStyles styles = PtResourceBundle.I.styles();
+//	private PtStyles styles = PtResourceBundle.I.styles();
+	private int linesCount = 0;
 	private static final int TIMER_PERIOD = 5000;
 	RestProvider provider = new RestProvider(RestProvider.REST_URL
 			+ "/passway/entrance");
 
 	public LogPanel() {
-		setWidth("100%");
-		Label label = new Label("Журнал неподтвержденных событий");
-		label.setStyleName(styles.columnHeader());
-		setWidget(0, 0, label);
 		FlexCellFormatter cellFormatter = this.getFlexCellFormatter();
-		cellFormatter.setColSpan(0, 0, 3);
 		cellFormatter
-				.setVerticalAlignment(1, 0, HasVerticalAlignment.ALIGN_TOP);
+				.setVerticalAlignment(linesCount, 0, HasVerticalAlignment.ALIGN_TOP);
 		cellFormatter
-				.setVerticalAlignment(1, 1, HasVerticalAlignment.ALIGN_TOP);
+				.setVerticalAlignment(linesCount, 1, HasVerticalAlignment.ALIGN_TOP);
 		cellFormatter
-				.setVerticalAlignment(1, 2, HasVerticalAlignment.ALIGN_TOP);
-		setHTML(1, 0, "ФИО");
-		setHTML(1, 1, "Время");
-		setHTML(1, 2, "Статус/Кнопки");
+				.setVerticalAlignment(linesCount, 2, HasVerticalAlignment.ALIGN_TOP);
+		setHTML(linesCount, 0, "ФИО");
+		setHTML(linesCount, 1, "Время");
+		setHTML(linesCount, 2, "Статус/Кнопки");
+		linesCount++;
 		Timer timer = new Timer() {
 
 			@Override
