@@ -3,11 +3,10 @@ package ru.relex.webClient.client;
 import java.util.Date;
 
 import ru.relex.webClient.client.model.AbsentInfo;
-import ru.relex.webClient.client.rest.RestProvider;
 
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 
-public class AbsentPanel extends VerticalPanel {
+public class AbsentPanel extends FlowPanel {
 
 //	private PtStyles styles = PtResourceBundle.I.styles();
 
@@ -21,10 +20,14 @@ public class AbsentPanel extends VerticalPanel {
 		absentInfo.setAbsentTimeMin(45);
 		absentInfo.setFirstName("Иван");
 		absentInfo.setLastName("Петров");
+    absentInfo.setUserId(2);
 
-		AbsentWidget absentWidget = new AbsentWidget(absentInfo,
-				RestProvider.REST_URL);
+		AbsentWidget absentWidget = new AbsentWidget(absentInfo);
 		add(absentWidget);
+    absentWidget = new AbsentWidget(absentInfo);
+    add(absentWidget);
+    absentWidget = new AbsentWidget(absentInfo);
+    add(absentWidget);
 	}
 
 	private void updateAbsentList() {

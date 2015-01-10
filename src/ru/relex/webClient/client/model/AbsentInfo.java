@@ -41,7 +41,7 @@ public class AbsentInfo {
 	}
 
 	public String getAvatarUrl() {
-		return "/users/avatar?user_id=" + userId;
+		return "/users/avatar?userId=" + userId;
 	}
 
 	public void setUserId(int userId) {

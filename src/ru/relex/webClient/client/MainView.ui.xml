@@ -33,14 +33,14 @@
 	}
 	</ui:style>
 	<g:HorizontalPanel width="100%" height="100%" spacing="4">
-		<g:cell width="30%" styleName="{style.blockStyle}">
+		<g:cell width="33%" styleName="{style.blockStyle}">
 			<g:VerticalPanel styleName="{style.mainframe}">
 				<g:Label styleName="{style.columnHeaderAbsent}">Отошли</g:Label>
 				<a:AbsentPanel ui:field="absentPanel">
 				</a:AbsentPanel>
 			</g:VerticalPanel>
 		</g:cell>
-		<g:cell width="70%" styleName="{style.blockStyle}">
+		<g:cell width="67%" styleName="{style.blockStyle}">
 			<g:VerticalPanel styleName="{style.mainframe}">
 				<g:cell height="27px">
 					<g:Label styleName="{style.columnHeaderUnacceptable}">Журнал неподтвержденных событий</g:Label>

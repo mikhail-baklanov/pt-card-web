@@ -19,7 +19,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 
 public class LogPanel extends FlexTable {
 
-	// private PtStyles styles = PtResourceBundle.I.styles();
+	private PtStyles styles = PtResourceBundle.I.styles();
 	private int linesCount = 0;
 	private static final int TIMER_PERIOD = 5000;
 	private long lastUpdate = 0;
@@ -27,13 +27,19 @@ public class LogPanel extends FlexTable {
 			+ "/passway/entrance");
 
 	public LogPanel() {
+	  styles.ensureInjected();
+    RowFormatter rowFormatter = getRowFormatter();
+    rowFormatter.setStyleName(linesCount, styles.secondHeaderRow());
 		FlexCellFormatter cellFormatter = this.getFlexCellFormatter();
 		cellFormatter.setVerticalAlignment(linesCount, 0,
 				HasVerticalAlignment.ALIGN_TOP);
+		cellFormatter.setStyleName(linesCount, 0, styles.secondHeader());
 		cellFormatter.setVerticalAlignment(linesCount, 1,
 				HasVerticalAlignment.ALIGN_TOP);
+    cellFormatter.setStyleName(linesCount, 1, styles.secondHeader());
 		cellFormatter.setVerticalAlignment(linesCount, 2,
 				HasVerticalAlignment.ALIGN_TOP);
+    cellFormatter.setStyleName(linesCount, 2, styles.secondHeader());
 		setHTML(linesCount, 0, "ФИО");
 		setHTML(linesCount, 1, "Время");
 		setHTML(linesCount, 2, "Статус/Кнопки");
@@ -85,6 +91,8 @@ public class LogPanel extends FlexTable {
 
 	private void fillRow(JSONObject user) {
 		PassInfo passInfo = readPassInfo(user);
+		RowFormatter rowFormatter = getRowFormatter();
+		rowFormatter.setStyleName(linesCount, styles.unacceptableRow());
 		setHTML(linesCount, 0,
 				passInfo.getFirstName() + " " + passInfo.getMiddleName() + " "
 						+ passInfo.getLastName());
@@ -121,14 +129,18 @@ public class LogPanel extends FlexTable {
 			break;
 		case WORK:
 			Button btnOut = new Button("Ушел");
+			btnOut.addStyleName(styles.actionButton());
 			btnOut.addClickHandler(new BtnClickHandler(passInfo, "away"));
 			Button btnWork = new Button("По работе");
+			btnWork.addStyleName(styles.actionButton());
 			btnWork.addClickHandler(new BtnClickHandler(passInfo, "absent",
 					"work"));
 			Button btnPers = new Button("По личным");
+			btnPers.addStyleName(styles.actionButton());
 			btnPers.addClickHandler(new BtnClickHandler(passInfo, "absent",
 					"personal"));
 			Button btnCancel2 = new Button("Отмена");
+			btnCancel2.addStyleName(styles.actionButton());
 			btnCancel2.addClickHandler(new BtnClickHandler(passInfo, "ignore"));
 			panel.add(btnOut);
 			panel.add(btnWork);

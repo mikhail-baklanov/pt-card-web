@@ -36,4 +36,12 @@ public interface PtStyles extends CssResource {
 
 	String absentWidgetText();
 
+  String secondHeader();
+
+  String unacceptableRow();
+
+  String actionButton();
+
+  String secondHeaderRow();
+
 }
