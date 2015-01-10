@@ -53,43 +53,6 @@ public class LogPanel extends FlexTable {
     update();
   }
 
-  public void addAcceptCallback(AsyncCallback<PassInfo> callback) {
-    this.callback = callback;
-  }
-
-  private void update() {
-    RestProvider provider = new RestProvider(RestProvider.REST_URL + "/passway/entrance?since="
-        + lastUpdate);
-
-    provider.getData(new AsyncCallback<JSONObject>() {
-
-      @Override
-      public void onSuccess(JSONObject result) {
-        JSONObject responce = result.get("passes_response").isObject();
-        if (responce != null) {
-          long lastUpdateTime = (long) responce.get("lastUpdateTime").isNumber().doubleValue();
-          if (lastUpdateTime > 0)
-            lastUpdate = lastUpdateTime;
-          JSONValue passes = responce.get("passes");
-          if (passes.isArray() != null) {
-            for (int i = 0; i < passes.isArray().size(); i++) {
-              JSONObject user = passes.isArray().get(i).isObject();
-              fillRow(user);
-            }
-          }
-          else if (passes.isObject() != null) {
-            fillRow(passes.isObject());
-          }
-        }
-      }
-
-      @Override
-      public void onFailure(Throwable caught) {
-
-      }
-    });
-  }
-
   private void fillRow(JSONObject user) {
     PassInfo passInfo = readPassInfo(user);
     RowFormatter rowFormatter = getRowFormatter();
@@ -99,19 +62,6 @@ public class LogPanel extends FlexTable {
     setHTML(linesCount, 1, passInfo.getPassTime().toLocaleString());
     setWidget(linesCount, 2, buildStatusPanel(passInfo, linesCount));
     linesCount++;
-  }
-
-  private PassInfo readPassInfo(JSONObject json) {
-    PassInfo passInfo = new PassInfo();
-    passInfo.setId((int) json.get("id").isNumber().doubleValue());
-    passInfo.setFirstName(json.get("firstName").isString().stringValue());
-    passInfo.setLastName(json.get("lastName").isString().stringValue());
-    passInfo.setMiddleName(json.get("middleName").isString().stringValue());
-    double time = json.get("passTime").isNumber().doubleValue();
-    passInfo.setPassTime(new Date((new Double(time)).longValue()));
-    UserStatus status = UserStatus.mvalueOf(json.get("status").isString().stringValue());
-    passInfo.setStatus(status);
-    return passInfo;
   }
 
   private HorizontalPanel buildStatusPanel(PassInfo passInfo, int rowNum) {
@@ -192,4 +142,55 @@ public class LogPanel extends FlexTable {
     }
   }
 
+	public void addAcceptCallback(AsyncCallback<PassInfo> callback) {
+		this.callback = callback;
+	}
+
+	private void update() {
+		RestProvider provider = new RestProvider(RestProvider.REST_URL
+				+ "/passway/entrance?since=" + lastUpdate);
+
+		provider.getData(new AsyncCallback<JSONObject>() {
+
+			@Override
+			public void onSuccess(JSONObject result) {
+				JSONObject responce = result.get("passes_response").isObject();
+				if (responce != null) {
+					long lastUpdateTime = (long) responce.get("lastUpdateTime")
+							.isNumber().doubleValue();
+					if (lastUpdateTime > 0)
+						lastUpdate = lastUpdateTime;
+					JSONValue passes = responce.get("passes");
+					if (passes.isArray() != null) {
+						for (int i = 0; i < passes.isArray().size(); i++) {
+							JSONObject user = passes.isArray().get(i)
+									.isObject();
+							fillRow(user);
+						}
+					} else if (passes.isObject() != null) {
+						fillRow(passes.isObject());
+					}
+				}
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+
+			}
+		});
+	}
+
+	private PassInfo readPassInfo(JSONObject json) {
+		PassInfo passInfo = new PassInfo();
+		passInfo.setId((int) json.get("id").isNumber().doubleValue());
+		passInfo.setFirstName(json.get("firstName").isString().stringValue());
+		passInfo.setLastName(json.get("lastName").isString().stringValue());
+		passInfo.setMiddleName(json.get("middleName").isString().stringValue());
+		double time = json.get("passTime").isNumber().doubleValue();
+		passInfo.setPassTime(new Date((new Double(time)).longValue()));
+		UserStatus status = UserStatus.mvalueOf(json.get("status").isString()
+				.stringValue());
+		passInfo.setStatus(status);
+		return passInfo;
+	}
 }
