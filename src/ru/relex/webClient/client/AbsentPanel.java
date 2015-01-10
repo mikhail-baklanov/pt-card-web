@@ -25,6 +25,8 @@ public class AbsentPanel extends VerticalPanel {
 		AbsentWidget absentWidget = new AbsentWidget(absentInfo,
 				RestProvider.REST_URL);
 		add(absentWidget);
+	}
 
+	private void updateAbsentList() {
 	}
 }

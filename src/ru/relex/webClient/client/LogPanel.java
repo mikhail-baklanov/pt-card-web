@@ -9,6 +9,7 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 
 public class LogPanel extends FlexTable {
@@ -40,8 +41,8 @@ public class LogPanel extends FlexTable {
 	}
 
 	private void update() {
-		RestProvider provider = new RestProvider(
-				RestProvider.REST_URL + "/passway/entrance");
+		RestProvider provider = new RestProvider(RestProvider.REST_URL
+				+ "/passway/entrance");
 		provider.getData(new AsyncCallback<JSONObject>() {
 
 			@Override
@@ -67,5 +68,14 @@ public class LogPanel extends FlexTable {
 
 			}
 		});
+	}
+
+	private FlowPanel buildStatusPanel(String status) {
+		FlowPanel panel = new FlowPanel();
+		return panel;
+	}
+
+	private enum Status {
+
 	}
 }

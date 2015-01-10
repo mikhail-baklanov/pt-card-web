@@ -12,6 +12,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class RestProvider {
   public static final String REST_URL = "http://172.17.11.148:8080/pt-api-0.0.4-SNAPSHOT/rest";
+	public static final String ABSENT_URL = "/passway/absent";
 	private final String url;
 
 	public RestProvider(String url) {
