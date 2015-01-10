@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class AbsentInfo {
 
-  static enum AbsentType {
+  public static enum AbsentType {
       WORK ("work"),
       PERSONAL ("personal");
     private String value;

@@ -36,5 +36,4 @@ public interface PtStyles extends CssResource {
 
 	String absentWidgetText();
 
-	String columnHeader();
 }

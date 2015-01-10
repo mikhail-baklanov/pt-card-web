@@ -23,7 +23,7 @@ public class AbsentWidget extends FlowPanel {
     add(nameLabel);
     Label periodLabel = new Label(getPeriod(absentInfo.getPassTime(), absentInfo.getAbsentTimeMin()));
     periodLabel.setStyleName(styles.absentWidgetText());
-    if (true || AbsentInfo.AbsentType.WORK.equals(absentInfo.getAbsentType())) {
+    if (AbsentInfo.AbsentType.WORK.equals(absentInfo.getAbsentType())) {
       periodLabel.addStyleName(styles.workAbsent());
     } else {
       periodLabel.addStyleName(styles.personalAbsent());

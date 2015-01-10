@@ -5,19 +5,13 @@ import java.util.Date;
 import ru.relex.webClient.client.model.AbsentInfo;
 import ru.relex.webClient.client.rest.RestProvider;
 
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class AbsentPanel extends VerticalPanel {
 
-	private PtStyles styles = PtResourceBundle.I.styles();
+//	private PtStyles styles = PtResourceBundle.I.styles();
 
 	public AbsentPanel() {
-		setWidth("100%");
-		setHeight("100%");
-		Label label = new Label("Отошли");
-		label.setStyleName(styles.columnHeader());
-		add(label);
 		addAbsent();
 	}
 
