@@ -33,14 +33,18 @@ public class LogPanel extends FlexTable {
     rowFormatter.setStyleName(linesCount, styles.secondHeaderRow());
     FlexCellFormatter cellFormatter = this.getFlexCellFormatter();
     cellFormatter.setVerticalAlignment(linesCount, 0, HasVerticalAlignment.ALIGN_TOP);
-    cellFormatter.setStyleName(linesCount, 0, styles.secondHeader());
     cellFormatter.setVerticalAlignment(linesCount, 1, HasVerticalAlignment.ALIGN_TOP);
-    cellFormatter.setStyleName(linesCount, 1, styles.secondHeader());
     cellFormatter.setVerticalAlignment(linesCount, 2, HasVerticalAlignment.ALIGN_TOP);
+    cellFormatter.setStyleName(linesCount, 0, styles.secondHeader());
+    cellFormatter.setStyleName(linesCount, 1, styles.secondHeader());
     cellFormatter.setStyleName(linesCount, 2, styles.secondHeader());
+    cellFormatter.setWidth(linesCount, 0, "40%");
+    cellFormatter.setWidth(linesCount, 1, "20%");
+    cellFormatter.setWidth(linesCount, 2, "40%");
+
     setHTML(linesCount, 0, "ФИО");
     setHTML(linesCount, 1, "Время");
-    setHTML(linesCount, 2, "Статус/Кнопки");
+    setHTML(linesCount, 2, "Действия");
     linesCount++;
     Timer timer = new Timer() {
 
@@ -110,6 +114,7 @@ public class LogPanel extends FlexTable {
     String   absentType;
 
     public BtnClickHandler(PassInfo passInfo, String newStatus, int rowNum, String absentType) {
+      this.rowNum = rowNum;
       this.passInfo = passInfo;
       this.newStatus = newStatus;
       this.absentType = absentType;
@@ -124,13 +129,16 @@ public class LogPanel extends FlexTable {
           + newStatus
           + "\""
           + (absentType != null && absentType.trim().length() > 0 ? ",\"absentType\"=\""
-              + absentType + "\"" : "") + "}}";
+              + absentType + "\"" : "") + ", \"absentTimeMin\":30}}";
       provider.putData(request, new AsyncCallback<JSONObject>() {
 
         @Override
         public void onSuccess(JSONObject result) {
-          callback.onSuccess(passInfo);
           LogPanel.this.removeRow(rowNum);
+          linesCount--;
+          if (!"ignore".equals(newStatus)) {
+            callback.onSuccess(passInfo);
+          }
         }
 
         @Override
@@ -142,55 +150,53 @@ public class LogPanel extends FlexTable {
     }
   }
 
-	public void addAcceptCallback(AsyncCallback<PassInfo> callback) {
-		this.callback = callback;
-	}
+  public void addAcceptCallback(AsyncCallback<PassInfo> callback) {
+    this.callback = callback;
+  }
 
-	private void update() {
-		RestProvider provider = new RestProvider(RestProvider.REST_URL
-				+ "/passway/entrance?since=" + lastUpdate);
+  private void update() {
+    RestProvider provider = new RestProvider(RestProvider.REST_URL + "/passway/entrance?since="
+        + lastUpdate);
 
-		provider.getData(new AsyncCallback<JSONObject>() {
+    provider.getData(new AsyncCallback<JSONObject>() {
 
-			@Override
-			public void onSuccess(JSONObject result) {
-				JSONObject responce = result.get("passes_response").isObject();
-				if (responce != null) {
-					long lastUpdateTime = (long) responce.get("lastUpdateTime")
-							.isNumber().doubleValue();
-					if (lastUpdateTime > 0)
-						lastUpdate = lastUpdateTime;
-					JSONValue passes = responce.get("passes");
-					if (passes.isArray() != null) {
-						for (int i = 0; i < passes.isArray().size(); i++) {
-							JSONObject user = passes.isArray().get(i)
-									.isObject();
-							fillRow(user);
-						}
-					} else if (passes.isObject() != null) {
-						fillRow(passes.isObject());
-					}
-				}
-			}
+      @Override
+      public void onSuccess(JSONObject result) {
+        JSONObject responce = result.get("passes_response").isObject();
+        if (responce != null) {
+          long lastUpdateTime = (long) responce.get("lastUpdateTime").isNumber().doubleValue();
+          if (lastUpdateTime > 0)
+            lastUpdate = lastUpdateTime;
+          JSONValue passes = responce.get("passes");
+          if (passes.isArray() != null) {
+            for (int i = 0; i < passes.isArray().size(); i++) {
+              JSONObject user = passes.isArray().get(i).isObject();
+              fillRow(user);
+            }
+          }
+          else if (passes.isObject() != null) {
+            fillRow(passes.isObject());
+          }
+        }
+      }
 
-			@Override
-			public void onFailure(Throwable caught) {
+      @Override
+      public void onFailure(Throwable caught) {
 
-			}
-		});
-	}
+      }
+    });
+  }
 
-	private PassInfo readPassInfo(JSONObject json) {
-		PassInfo passInfo = new PassInfo();
-		passInfo.setId((int) json.get("id").isNumber().doubleValue());
-		passInfo.setFirstName(json.get("firstName").isString().stringValue());
-		passInfo.setLastName(json.get("lastName").isString().stringValue());
-		passInfo.setMiddleName(json.get("middleName").isString().stringValue());
-		double time = json.get("passTime").isNumber().doubleValue();
-		passInfo.setPassTime(new Date((new Double(time)).longValue()));
-		UserStatus status = UserStatus.mvalueOf(json.get("status").isString()
-				.stringValue());
-		passInfo.setStatus(status);
-		return passInfo;
-	}
+  private PassInfo readPassInfo(JSONObject json) {
+    PassInfo passInfo = new PassInfo();
+    passInfo.setId((int) json.get("id").isNumber().doubleValue());
+    passInfo.setFirstName(json.get("firstName").isString().stringValue());
+    passInfo.setLastName(json.get("lastName").isString().stringValue());
+    passInfo.setMiddleName(json.get("middleName").isString().stringValue());
+    double time = json.get("passTime").isNumber().doubleValue();
+    passInfo.setPassTime(new Date((new Double(time)).longValue()));
+    UserStatus status = UserStatus.mvalueOf(json.get("status").isString().stringValue());
+    passInfo.setStatus(status);
+    return passInfo;
+  }
 }
