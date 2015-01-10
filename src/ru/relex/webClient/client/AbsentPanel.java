@@ -10,10 +10,13 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class AbsentPanel extends VerticalPanel {
 
+	private PtStyles styles = PtResourceBundle.I.styles();
+
 	public AbsentPanel() {
 		setWidth("100%");
 		setHeight("100%");
 		Label label = new Label("Отошли");
+		label.setStyleName(styles.columnHeader());
 		add(label);
 		addAbsent();
 	}

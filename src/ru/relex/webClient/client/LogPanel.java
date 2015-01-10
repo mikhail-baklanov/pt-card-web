@@ -22,7 +22,7 @@ public class LogPanel extends FlexTable {
 		label.setStyleName(styles.columnHeader());
 		setWidget(0, 0, label);
 		FlexCellFormatter cellFormatter = this.getFlexCellFormatter();
-		cellFormatter.setColSpan(0, 0, 2);
+		cellFormatter.setColSpan(0, 0, 3);
 		cellFormatter
 				.setVerticalAlignment(1, 0, HasVerticalAlignment.ALIGN_TOP);
 		cellFormatter
