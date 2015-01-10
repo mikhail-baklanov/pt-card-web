@@ -46,7 +46,7 @@ public class LogPanel extends FlexTable {
 				update();
 			}
 		};
-		timer.scheduleRepeating(TIMER_PERIOD);
+		// timer.scheduleRepeating(TIMER_PERIOD);
 		update();
 	}
 

@@ -44,8 +44,13 @@ public class RestProvider {
 				public void onResponseReceived(Request request,
 						Response response) {
 					try {
-						callback.onSuccess(JSONParser.parseStrict(
-								response.getText()).isObject());
+						if (response != null && response.getText() != null
+								&& !response.getText().isEmpty())
+							callback.onSuccess(JSONParser.parseStrict(
+									response.getText()).isObject());
+						else {
+							callback.onSuccess(null);
+						}
 					} catch (Exception e) {
 						callback.onFailure(e);
 					}
