@@ -6,8 +6,8 @@ import com.google.gwt.http.client.RequestBuilder.Method;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
-import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class RestProvider {
@@ -19,22 +19,22 @@ public class RestProvider {
 		this.url = url;
 	}
 
-	public void getData(final AsyncCallback<JSONObject> callback) {
+	public void getData(final AsyncCallback<JSONValue> callback) {
 		sendRequest(null, RequestBuilder.GET, callback);
 	}
 
 	public void postData(String requestData,
-			final AsyncCallback<JSONObject> callback) {
+			final AsyncCallback<JSONValue> callback) {
 		sendRequest(requestData, RequestBuilder.POST, callback);
 	}
 
 	public void putData(String requestData,
-			final AsyncCallback<JSONObject> callback) {
+			final AsyncCallback<JSONValue> callback) {
 		sendRequest(requestData, RequestBuilder.PUT, callback);
 	}
 
 	private void sendRequest(String requestData, Method requestMethod,
-			final AsyncCallback<JSONObject> callback) {
+			final AsyncCallback<JSONValue> callback) {
 		SystemRequestBuilder builder = new SystemRequestBuilder(requestMethod,
 				url);
 		try {
@@ -44,12 +44,17 @@ public class RestProvider {
 				public void onResponseReceived(Request request,
 						Response response) {
 					try {
-						if (response != null && response.getText() != null
-								&& !response.getText().isEmpty())
-							callback.onSuccess(JSONParser.parseStrict(
-									response.getText()).isObject());
-						else {
-							callback.onSuccess(null);
+						if (response.getStatusCode() >= 200
+								&& response.getStatusCode() < 300) {
+							if (response != null && response.getText() != null
+									&& !response.getText().isEmpty())
+								callback.onSuccess(JSONParser
+										.parseStrict(response.getText()));
+							else {
+								callback.onSuccess(null);
+							}
+						} else {
+							callback.onFailure(null);
 						}
 					} catch (Exception e) {
 						callback.onFailure(e);
