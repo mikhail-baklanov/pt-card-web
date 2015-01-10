@@ -1,4 +1,4 @@
-package ru.relex.webClient.client;
+package ru.relex.webClient.client.model;
 
 import java.util.Date;
 

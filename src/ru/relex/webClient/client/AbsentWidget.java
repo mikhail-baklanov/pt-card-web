@@ -2,6 +2,8 @@ package ru.relex.webClient.client;
 
 import java.util.Date;
 
+import ru.relex.webClient.client.model.AbsentInfo;
+
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;

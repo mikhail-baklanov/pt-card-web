@@ -2,6 +2,7 @@ package ru.relex.webClient.client;
 
 import java.util.Date;
 
+import ru.relex.webClient.client.model.AbsentInfo;
 import ru.relex.webClient.client.rest.RestProvider;
 
 import com.google.gwt.user.client.ui.Label;
