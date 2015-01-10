@@ -41,8 +41,12 @@ public class RestProvider {
 				@Override
 				public void onResponseReceived(Request request,
 						Response response) {
-					callback.onSuccess(JSONParser.parseStrict(
-							response.getText()).isObject());
+					if (response != null
+							&& response.getText() != null
+							&& !response.getText().isEmpty()
+							&& JSONParser.parseStrict(response.getText()) != null)
+						callback.onSuccess(JSONParser.parseStrict(
+								response.getText()).isObject());
 				}
 
 				@Override
