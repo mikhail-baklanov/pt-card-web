@@ -4,7 +4,10 @@ target
 # eclipse specific
 .settings
 .metadata
-war
+war/webclient
+war/WEB-INF/classes
+war/WEB-INF/deploy
+war/WEB-INF/lib
 test-classes
 gwt-unitCache
 .gwt
