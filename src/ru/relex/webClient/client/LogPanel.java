@@ -25,6 +25,7 @@ public class LogPanel extends FlexTable {
 	private long lastUpdate = 0;
 	private RestProvider provider = new RestProvider(RestProvider.REST_URL
 			+ "/passway/entrance");
+	private AsyncCallback<PassInfo> callback;
 
 	public LogPanel() {
 		FlexCellFormatter cellFormatter = this.getFlexCellFormatter();
@@ -47,6 +48,10 @@ public class LogPanel extends FlexTable {
 		};
 		timer.scheduleRepeating(TIMER_PERIOD);
 		update();
+	}
+
+	public void addAcceptCallback(AsyncCallback<PassInfo> callback) {
+		this.callback = callback;
 	}
 
 	private void update() {
@@ -89,24 +94,25 @@ public class LogPanel extends FlexTable {
 				passInfo.getFirstName() + " " + passInfo.getMiddleName() + " "
 						+ passInfo.getLastName());
 		setHTML(linesCount, 1, passInfo.getPassTime().toLocaleString());
-		setWidget(linesCount, 2, buildStatusPanel(passInfo));
+		setWidget(linesCount, 2, buildStatusPanel(passInfo, linesCount));
 		linesCount++;
 	}
 
 	private PassInfo readPassInfo(JSONObject json) {
 		PassInfo passInfo = new PassInfo();
 		passInfo.setId((int) json.get("id").isNumber().doubleValue());
-		passInfo.setFirstName(json.get("firstName").toString());
-		passInfo.setLastName(json.get("lastName").toString());
-		passInfo.setMiddleName(json.get("middleName").toString());
+		passInfo.setFirstName(json.get("firstName").isString().stringValue());
+		passInfo.setLastName(json.get("lastName").isString().stringValue());
+		passInfo.setMiddleName(json.get("middleName").isString().stringValue());
 		double time = json.get("passTime").isNumber().doubleValue();
 		passInfo.setPassTime(new Date((new Double(time)).longValue()));
-		UserStatus status = UserStatus.mvalueOf(json.get("status").toString());
+		UserStatus status = UserStatus.mvalueOf(json.get("status").isString()
+				.stringValue());
 		passInfo.setStatus(status);
 		return passInfo;
 	}
 
-	private HorizontalPanel buildStatusPanel(PassInfo passInfo) {
+	private HorizontalPanel buildStatusPanel(PassInfo passInfo, int rowNum) {
 		HorizontalPanel panel = new HorizontalPanel();
 		switch (passInfo.getStatus()) {
 		case ABSENT:
@@ -114,22 +120,24 @@ public class LogPanel extends FlexTable {
 		case NONE:
 			Button btnIn = new Button("Пришел");
 			Button btnCancel = new Button("Отмена");
-			btnIn.addClickHandler(new BtnClickHandler(passInfo, "work"));
-			btnCancel.addClickHandler(new BtnClickHandler(passInfo, "ignore"));
+			btnIn.addClickHandler(new BtnClickHandler(passInfo, "work", rowNum));
+			btnCancel.addClickHandler(new BtnClickHandler(passInfo, "ignore",
+					rowNum));
 			panel.add(btnIn);
 			panel.add(btnCancel);
 			break;
 		case WORK:
 			Button btnOut = new Button("Ушел");
-			btnOut.addClickHandler(new BtnClickHandler(passInfo, "away"));
+			btnOut.addClickHandler(new BtnClickHandler(passInfo, "away", rowNum));
 			Button btnWork = new Button("По работе");
 			btnWork.addClickHandler(new BtnClickHandler(passInfo, "absent",
-					"work"));
+					rowNum, "work"));
 			Button btnPers = new Button("По личным");
 			btnPers.addClickHandler(new BtnClickHandler(passInfo, "absent",
-					"personal"));
+					rowNum, "personal"));
 			Button btnCancel2 = new Button("Отмена");
-			btnCancel2.addClickHandler(new BtnClickHandler(passInfo, "ignore"));
+			btnCancel2.addClickHandler(new BtnClickHandler(passInfo, "ignore",
+					rowNum));
 			panel.add(btnOut);
 			panel.add(btnWork);
 			panel.add(btnPers);
@@ -144,16 +152,18 @@ public class LogPanel extends FlexTable {
 	private class BtnClickHandler implements ClickHandler {
 		PassInfo passInfo;
 		String newStatus;
+		int rowNum = Integer.MAX_VALUE;
 		String absentType = "";
 
-		public BtnClickHandler(PassInfo passInfo, String newStatus) {
+		public BtnClickHandler(PassInfo passInfo, String newStatus, int rowNum) {
 			this.passInfo = passInfo;
 			this.newStatus = newStatus;
+			this.rowNum = rowNum;
 		}
 
-		public BtnClickHandler(PassInfo passInfo, String newStatus,
+		public BtnClickHandler(PassInfo passInfo, String newStatus, int rowNum,
 				String absentType) {
-			this(passInfo, newStatus);
+			this(passInfo, newStatus, rowNum);
 			this.absentType = absentType;
 		}
 
@@ -167,7 +177,8 @@ public class LogPanel extends FlexTable {
 
 				@Override
 				public void onSuccess(JSONObject result) {
-					// TODO Auto-generated method stub
+					callback.onSuccess(passInfo);
+					LogPanel.this.removeRow(rowNum);
 				}
 
 				@Override
