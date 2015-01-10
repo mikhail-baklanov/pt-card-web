@@ -11,6 +11,7 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class RestProvider {
+  public static final String REST_URL = "http://127.0.0.1:8080/pt-api-0.0.3-SNAPSHOT/rest";
 	private final String url;
 
 	public RestProvider(String url) {

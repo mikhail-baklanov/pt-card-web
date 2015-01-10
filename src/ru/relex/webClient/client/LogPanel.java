@@ -44,7 +44,7 @@ public class LogPanel extends FlexTable {
 
 	private void update() {
 		RestProvider provider = new RestProvider(
-				"http://127.0.0.1:8080/pt-api-0.0.3-SNAPSHOT/rest/passway/entrance");
+				RestProvider.REST_URL + "/passway/entrance");
 		provider.getData(new AsyncCallback<JSONObject>() {
 
 			@Override

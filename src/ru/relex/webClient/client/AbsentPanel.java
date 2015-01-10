@@ -2,6 +2,8 @@ package ru.relex.webClient.client;
 
 import java.util.Date;
 
+import ru.relex.webClient.client.rest.RestProvider;
+
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -26,7 +28,7 @@ public class AbsentPanel extends VerticalPanel {
 		absentInfo.setLastName("Петров");
 
 		AbsentWidget absentWidget = new AbsentWidget(absentInfo,
-				"http://localhost:8080/pt-api-0.0.3-SNAPSHOT/rest");
+				RestProvider.REST_URL);
 		add(absentWidget);
 
 	}
