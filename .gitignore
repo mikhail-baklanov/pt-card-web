@@ -3,7 +3,6 @@ target
 
 # eclipse specific
 .settings
-.classpath
 .metadata
 war
 test-classes
