@@ -130,10 +130,10 @@ public class LogPanel extends FlexTable {
           + "\""
           + (absentType != null && absentType.trim().length() > 0 ? ",\"absentType\"=\""
               + absentType + "\"" : "") + ", \"absentTimeMin\":30}}";
-      provider.putData(request, new AsyncCallback<JSONObject>() {
+      provider.putData(request, new AsyncCallback<JSONValue>() {
 
         @Override
-        public void onSuccess(JSONObject result) {
+        public void onSuccess(JSONValue result) {
           LogPanel.this.removeRow(rowNum);
           linesCount--;
           if (!"ignore".equals(newStatus)) {
@@ -158,11 +158,11 @@ public class LogPanel extends FlexTable {
     RestProvider provider = new RestProvider(RestProvider.REST_URL + "/passway/entrance?since="
         + lastUpdate);
 
-    provider.getData(new AsyncCallback<JSONObject>() {
+    provider.getData(new AsyncCallback<JSONValue>() {
 
       @Override
-      public void onSuccess(JSONObject result) {
-        JSONObject responce = result.get("passes_response").isObject();
+      public void onSuccess(JSONValue result) {
+        JSONObject responce = result.isObject().get("passes_response").isObject();
         if (responce != null) {
           long lastUpdateTime = (long) responce.get("lastUpdateTime").isNumber().doubleValue();
           if (lastUpdateTime > 0)
