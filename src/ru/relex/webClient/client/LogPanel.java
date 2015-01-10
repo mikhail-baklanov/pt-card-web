@@ -8,32 +8,32 @@ import ru.relex.webClient.client.rest.RestProvider;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 
 public class LogPanel extends FlexTable {
 
-//	private PtStyles styles = PtResourceBundle.I.styles();
+	// private PtStyles styles = PtResourceBundle.I.styles();
 	private int linesCount = 0;
 	private static final int TIMER_PERIOD = 5000;
-	RestProvider provider = new RestProvider(RestProvider.REST_URL
+	private long lastUpdate = 0;
+	private RestProvider provider = new RestProvider(RestProvider.REST_URL
 			+ "/passway/entrance");
 
 	public LogPanel() {
 		FlexCellFormatter cellFormatter = this.getFlexCellFormatter();
-		cellFormatter
-				.setVerticalAlignment(linesCount, 0, HasVerticalAlignment.ALIGN_TOP);
-		cellFormatter
-				.setVerticalAlignment(linesCount, 1, HasVerticalAlignment.ALIGN_TOP);
-		cellFormatter
-				.setVerticalAlignment(linesCount, 2, HasVerticalAlignment.ALIGN_TOP);
+		cellFormatter.setVerticalAlignment(linesCount, 0,
+				HasVerticalAlignment.ALIGN_TOP);
+		cellFormatter.setVerticalAlignment(linesCount, 1,
+				HasVerticalAlignment.ALIGN_TOP);
+		cellFormatter.setVerticalAlignment(linesCount, 2,
+				HasVerticalAlignment.ALIGN_TOP);
 		setHTML(linesCount, 0, "ФИО");
 		setHTML(linesCount, 1, "Время");
 		setHTML(linesCount, 2, "Статус/Кнопки");
@@ -46,29 +46,34 @@ public class LogPanel extends FlexTable {
 			}
 		};
 		timer.scheduleRepeating(TIMER_PERIOD);
+		update();
 	}
 
 	private void update() {
 		RestProvider provider = new RestProvider(RestProvider.REST_URL
-				+ "/passway/entrance");
+				+ "/passway/entrance?since=" + lastUpdate);
+
 		provider.getData(new AsyncCallback<JSONObject>() {
 
 			@Override
 			public void onSuccess(JSONObject result) {
-				JSONArray passes = result.get("passes_response").isObject()
-						.get("passes").isArray();
-				for (int i = 0; i < passes.size(); i++) {
-					JSONObject user = passes.get(i).isObject();
-					PassInfo passInfo = readPassInfo(user);
-					setHTML(i + 2,
-							0,
-							passInfo.getFirstName() + " "
-									+ passInfo.getMiddleName() + " "
-									+ passInfo.getLastName());
-					setHTML(i + 2, 1, passInfo.getPassTime().toLocaleString());
-					setWidget(i + 2, 2, buildStatusPanel(passInfo));
+				JSONObject responce = result.get("passes_response").isObject();
+				if (responce != null) {
+					long lastUpdateTime = (long) responce.get("lastUpdateTime")
+							.isNumber().doubleValue();
+					if (lastUpdateTime > 0)
+						lastUpdate = lastUpdateTime;
+					JSONValue passes = responce.get("passes");
+					if (passes.isArray() != null) {
+						for (int i = 0; i < passes.isArray().size(); i++) {
+							JSONObject user = passes.isArray().get(i)
+									.isObject();
+							fillRow(user);
+						}
+					} else if (passes.isObject() != null) {
+						fillRow(passes.isObject());
+					}
 				}
-
 			}
 
 			@Override
@@ -76,6 +81,16 @@ public class LogPanel extends FlexTable {
 
 			}
 		});
+	}
+
+	private void fillRow(JSONObject user) {
+		PassInfo passInfo = readPassInfo(user);
+		setHTML(linesCount, 0,
+				passInfo.getFirstName() + " " + passInfo.getMiddleName() + " "
+						+ passInfo.getLastName());
+		setHTML(linesCount, 1, passInfo.getPassTime().toLocaleString());
+		setWidget(linesCount, 2, buildStatusPanel(passInfo));
+		linesCount++;
 	}
 
 	private PassInfo readPassInfo(JSONObject json) {
@@ -145,8 +160,8 @@ public class LogPanel extends FlexTable {
 		@Override
 		public void onClick(ClickEvent event) {
 
-			String request = "{\"id\":" + passInfo.getId() + ", \"status\":\""
-					+ newStatus + "\"}";
+			String request = "{\"process\":{\"id\":" + passInfo.getId()
+					+ ", \"status\":\"" + newStatus + "\"}}";
 			// ,\"absentType\"=\"" + absentType + "\"
 			provider.putData(request, new AsyncCallback<JSONObject>() {
 
