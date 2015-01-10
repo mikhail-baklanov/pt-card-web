@@ -45,8 +45,11 @@
 				<g:cell height="27px">
 					<g:Label styleName="{style.columnHeaderUnacceptable}">Журнал неподтвержденных событий</g:Label>
 				</g:cell>
-				<g:cell width="100%">
+				<g:cell width="300px">
 					<a:LogPanel ui:field="logPanel" styleName="{style.table}"></a:LogPanel>
+				</g:cell>
+				<g:cell width="300px">
+					<a:AcceptPanel ui:field="accept"  styleName="{style.table}"></a:AcceptPanel>
 				</g:cell>
 			</g:VerticalPanel>
 		</g:cell>

@@ -5,11 +5,18 @@ import java.util.Date;
 public class PassInfo {
 
 	public static enum UserStatus {
-		NONE("none"), WORK("work"), AWAY("away"), ABSENT("absent");
+		NONE("none", "пусто"), WORK("work", "на работе"), AWAY("away", "ушел"), ABSENT(
+				"absent", "отошел");
 		private String value;
+		private String name;
 
-		private UserStatus(String value) {
+		private UserStatus(String value, String name) {
 			this.value = value;
+			this.name = name;
+		}
+
+		public String getName() {
+			return name;
 		}
 
 		public static UserStatus mvalueOf(String value) {
