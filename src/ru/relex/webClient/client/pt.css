@@ -1,0 +1,29 @@
+.workAbsent {
+	background-color: lime;
+}
+
+.personalAbsent {
+	background-color: lightgray;
+}
+
+.absentWidget {
+    border: 1px solid #D3D3D3;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    padding: 5px;
+    width: 100px;
+    margin: 10px;
+}
+
+.absentWidgetPhoto {
+	margin-left: 10px;
+}
+
+.absentWidgetText {
+	text-align: center;
+}
+
+.columnHeader {
+	text-align: center;
+	font-size: 18px;
+	background-color: #939393;
+}

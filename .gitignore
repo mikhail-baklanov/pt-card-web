@@ -1,0 +1,12 @@
+# common ignore
+target
+
+# eclipse specific
+.settings
+.project
+.classpath
+.metadata
+war
+test-classes
+gwt-unitCache
+.gwt
