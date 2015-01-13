@@ -1,0 +1,66 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:a="urn:import:ru.relex.webClient.client">
+	<ui:style>
+	.mainframe {
+		border-style: none;
+		width: 100%;
+		height: 100%;
+		border-style: solid;
+		border-width: 1px;
+		border-color: gray;
+	}
+	
+	.table {
+		width: 100%;
+	/*	height: 100%; */
+	}
+	.columnHeaderAbsent {
+		text-align: center;
+		font-size: 16px;
+		background-color: #FF8888;
+		height: 27px;
+	}
+	.columnHeaderUnacceptable {
+		text-align: center;
+		font-size: 16px;
+		background-color: lightgray;
+		height: 27px;
+	}
+	.columnHeaderAcceptable {
+		text-align: center;
+		font-size: 16px;
+		background-color: lime;
+		height: 27px;
+	}
+	.blockStyle {
+		padding: 3px;
+	}
+	</ui:style>
+	<g:HorizontalPanel width="100%" height="100%" spacing="4">
+		<g:cell width="33%" styleName="{style.blockStyle}">
+			<g:VerticalPanel styleName="{style.mainframe}">
+				<g:Label styleName="{style.columnHeaderAbsent}">Отошли</g:Label>
+				<a:AbsentPanel ui:field="absentPanel">
+				</a:AbsentPanel>
+			</g:VerticalPanel>
+		</g:cell>
+		<g:cell width="67%" styleName="{style.blockStyle}">
+			<g:VerticalPanel styleName="{style.mainframe}">
+				<g:cell height="27px">
+					<g:Label styleName="{style.columnHeaderUnacceptable}">Журнал неподтвержденных событий</g:Label>
+				</g:cell>
+				<g:cell width="300px">
+					<a:LogPanel ui:field="logPanel" styleName="{style.table}"></a:LogPanel>
+				</g:cell>
+				<g:cell height="27px">
+					<g:Label styleName="{style.columnHeaderAcceptable}">Журнал подтвержденных событий</g:Label>
+				</g:cell>
+				<g:cell width="300px">
+					<a:AcceptPanel ui:field="accept"  styleName="{style.table}"></a:AcceptPanel>
+				</g:cell>
+			</g:VerticalPanel>
+		</g:cell>
+	</g:HorizontalPanel>
+
+</ui:UiBinder> 
