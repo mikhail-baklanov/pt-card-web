@@ -9,7 +9,6 @@ import ru.relex.webClient.client.rest.RestProvider;
 
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 
@@ -19,25 +18,46 @@ public class AbsentPanel extends FlowPanel {
 	private Map<Integer, AbsentInfo> users = new HashMap<Integer, AbsentInfo>();
 
 	public AbsentPanel() {
-		Timer timer = new Timer() {
-
-			@Override
-			public void run() {
-				updateAbsentList();
-			}
-		};
-		timer.scheduleRepeating(5000);
+		addAbsent();
+		// Timer timer = new Timer() {
+		//
+		// @Override
+		// public void run() {
+		// updateAbsentList();
+		// }
+		// };
+		// timer.scheduleRepeating(5000);
 	}
 
 	private void addAbsent() {
 		AbsentInfo absentInfo = new AbsentInfo();
 		absentInfo.setPassTime(new Date());
 		absentInfo.setAbsentTimeMin(45);
-		absentInfo.setFirstName("Иван");
-		absentInfo.setLastName("Петров");
+		absentInfo.setFirstName("Денис");
+		absentInfo.setLastName("Лапин");
 		absentInfo.setUserId(2);
 
 		AbsentWidget absentWidget = new AbsentWidget(absentInfo);
+		add(absentWidget);
+
+		absentInfo = new AbsentInfo();
+		absentInfo.setPassTime(new Date());
+		absentInfo.setAbsentTimeMin(30);
+		absentInfo.setFirstName("Михаил");
+		absentInfo.setLastName("Бакланов");
+		absentInfo.setUserId(1);
+
+		absentWidget = new AbsentWidget(absentInfo);
+		add(absentWidget);
+
+		absentInfo = new AbsentInfo();
+		absentInfo.setPassTime(new Date());
+		absentInfo.setAbsentTimeMin(30);
+		absentInfo.setFirstName("Вадим");
+		absentInfo.setLastName("Мельников");
+		absentInfo.setUserId(3);
+
+		absentWidget = new AbsentWidget(absentInfo);
 		add(absentWidget);
 	}
 
