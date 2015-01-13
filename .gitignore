@@ -1,13 +1,7 @@
-# common ignore
 target
-
-# eclipse specific
 .settings
 .metadata
-war/webclient
-war/WEB-INF/classes
-war/WEB-INF/deploy
-war/WEB-INF/lib
-test-classes
-gwt-unitCache
-.gwt
+src/main/gwt-unitCache
+src/main/webapp/webclient
+src/main/webapp/WEB-INF/classes
+src/main/webapp/WEB-INF/lib
