@@ -5,3 +5,5 @@ src/main/gwt-unitCache
 src/main/webapp/webclient
 src/main/webapp/WEB-INF/classes
 src/main/webapp/WEB-INF/lib
+src/main/webapp/ru.relex.webClient.WebClientJUnit
+src/main/webapp/WEB-INF/deploy/ru.relex.webClient.WebClientJUnit
