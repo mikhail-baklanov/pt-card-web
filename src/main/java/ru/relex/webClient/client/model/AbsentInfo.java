@@ -2,6 +2,8 @@ package ru.relex.webClient.client.model;
 
 import java.util.Date;
 
+import com.google.gwt.json.client.JSONObject;
+
 public class AbsentInfo {
 
 	public static enum AbsentType {
@@ -91,5 +93,18 @@ public class AbsentInfo {
 	public Date getPassTime() {
 		return passTime;
 	}
+
+  public static AbsentInfo fromJSONObject(JSONObject user) {
+    AbsentInfo absentInfo = new AbsentInfo();
+    absentInfo.setFirstName(user.get("firstName").isString().stringValue());
+    absentInfo.setMiddleName(user.get("middleName").isString().stringValue());
+    absentInfo.setLastName(user.get("lastName").isString().stringValue());
+    absentInfo.setAbsentTimeMin((int) user.get("absentTime").isNumber().doubleValue());
+    int userId = (int) user.get("userId").isNumber().doubleValue();
+    absentInfo.setUserId(userId);
+    Date date = new Date((long) user.get("passTime").isNumber().doubleValue());
+    absentInfo.setPassTime(date);
+    return absentInfo;
+  }
 
 }
