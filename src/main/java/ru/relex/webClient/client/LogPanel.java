@@ -1,9 +1,9 @@
 package ru.relex.webClient.client;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 import ru.relex.webClient.client.model.PassInfo;
-import ru.relex.webClient.client.model.PassInfo.UserStatus;
 import ru.relex.webClient.client.rest.RestProvider;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -26,6 +26,7 @@ public class LogPanel extends FlexTable {
   private RestProvider            provider     = new RestProvider(RestProvider.REST_URL
                                                    + "/passway/entrance");
   private AsyncCallback<PassInfo> callback;
+  private List<PassInfo>          list         = new ArrayList<PassInfo>();
 
   public LogPanel() {
     styles.ensureInjected();
@@ -50,46 +51,57 @@ public class LogPanel extends FlexTable {
 
       @Override
       public void run() {
-        update();
+        loadNewRecords();
       }
     };
     timer.scheduleRepeating(TIMER_PERIOD);
-    update();
+    loadNewRecords();
   }
 
-  private void fillRow(JSONObject user) {
-    PassInfo passInfo = readPassInfo(user);
+  private void addRow(PassInfo passInfo) {
     RowFormatter rowFormatter = getRowFormatter();
     rowFormatter.setStyleName(linesCount, styles.unacceptableRow());
     setHTML(linesCount, 0, passInfo.getFirstName() + " " + passInfo.getMiddleName() + " "
         + passInfo.getLastName());
     setHTML(linesCount, 1, passInfo.getPassTime().toLocaleString());
-    setWidget(linesCount, 2, buildStatusPanel(passInfo, linesCount));
+    setWidget(linesCount, 2, buildStatusPanel(passInfo));
     linesCount++;
+    list.add(passInfo);
   }
 
-  private HorizontalPanel buildStatusPanel(PassInfo passInfo, int rowNum) {
+  private void deleteRow(int id) {
+    for (int i = 0; i < list.size(); i++) {
+      if (list.get(i).getId() == id) {
+        removeRow(i);
+        list.remove(i);
+        linesCount--;
+        break;
+      }
+    }
+  }
+
+  private HorizontalPanel buildStatusPanel(PassInfo passInfo) {
     HorizontalPanel panel = new HorizontalPanel();
     switch (passInfo.getStatus()) {
       case ABSENT:
       case AWAY:
       case NONE:
         Button btnIn = new Button("Пришел");
-        setupButton(btnIn, passInfo, "work", rowNum, null);
+        setupButton(btnIn, passInfo, "work", null);
         Button btnCancel = new Button("Отмена");
-        setupButton(btnCancel, passInfo, "ignore", rowNum, null);
+        setupButton(btnCancel, passInfo, "ignore", null);
         panel.add(btnIn);
         panel.add(btnCancel);
         break;
       case WORK:
         Button btnOut = new Button("Ушел");
-        setupButton(btnOut, passInfo, "away", rowNum, null);
+        setupButton(btnOut, passInfo, "away", null);
         Button btnWork = new Button("По работе");
-        setupButton(btnWork, passInfo, "absent", rowNum, "work");
+        setupButton(btnWork, passInfo, "absent", "work");
         Button btnPers = new Button("По личным");
-        setupButton(btnPers, passInfo, "absent", rowNum, "personal");
+        setupButton(btnPers, passInfo, "absent", "personal");
         Button btnCancel2 = new Button("Отмена");
-        setupButton(btnCancel2, passInfo, "ignore", rowNum, null);
+        setupButton(btnCancel2, passInfo, "ignore", null);
         panel.add(btnOut);
         panel.add(btnWork);
         panel.add(btnPers);
@@ -101,20 +113,18 @@ public class LogPanel extends FlexTable {
     return panel;
   }
 
-  private void setupButton(Button btn, PassInfo passInfo, String status, int rowNum,
+  private void setupButton(Button btn, PassInfo passInfo, String status,
       String absentType) {
-    btn.addClickHandler(new BtnClickHandler(passInfo, status, rowNum, absentType));
+    btn.addClickHandler(new BtnClickHandler(passInfo, status, absentType));
     btn.addStyleName(styles.actionButton());
   }
 
   private class BtnClickHandler implements ClickHandler {
     PassInfo passInfo;
     String   newStatus;
-    int      rowNum = Integer.MAX_VALUE;
     String   absentType;
 
-    public BtnClickHandler(PassInfo passInfo, String newStatus, int rowNum, String absentType) {
-      this.rowNum = rowNum;
+    public BtnClickHandler(PassInfo passInfo, String newStatus, String absentType) {
       this.passInfo = passInfo;
       this.newStatus = newStatus;
       this.absentType = absentType;
@@ -134,8 +144,7 @@ public class LogPanel extends FlexTable {
 
         @Override
         public void onSuccess(JSONValue result) {
-          LogPanel.this.removeRow(rowNum);
-          linesCount--;
+          deleteRow(passInfo.getId());
           if (!"ignore".equals(newStatus)) {
             callback.onSuccess(passInfo);
           }
@@ -154,7 +163,7 @@ public class LogPanel extends FlexTable {
     this.callback = callback;
   }
 
-  private void update() {
+  private void loadNewRecords() {
     RestProvider provider = new RestProvider(RestProvider.REST_URL + "/passway/entrance?since="
         + lastUpdate);
 
@@ -171,11 +180,14 @@ public class LogPanel extends FlexTable {
           if (passes.isArray() != null) {
             for (int i = 0; i < passes.isArray().size(); i++) {
               JSONObject user = passes.isArray().get(i).isObject();
-              fillRow(user);
+              PassInfo passInfo = PassInfo.fromJSONObject(user);
+              addRow(passInfo);
             }
           }
           else if (passes.isObject() != null) {
-            fillRow(passes.isObject());
+            JSONObject user = passes.isObject();
+            PassInfo passInfo = PassInfo.fromJSONObject(user);
+            addRow(passInfo);
           }
         }
       }
@@ -185,18 +197,5 @@ public class LogPanel extends FlexTable {
 
       }
     });
-  }
-
-  private PassInfo readPassInfo(JSONObject json) {
-    PassInfo passInfo = new PassInfo();
-    passInfo.setId((int) json.get("id").isNumber().doubleValue());
-    passInfo.setFirstName(json.get("firstName").isString().stringValue());
-    passInfo.setLastName(json.get("lastName").isString().stringValue());
-    passInfo.setMiddleName(json.get("middleName").isString().stringValue());
-    double time = json.get("passTime").isNumber().doubleValue();
-    passInfo.setPassTime(new Date((new Double(time)).longValue()));
-    UserStatus status = UserStatus.mvalueOf(json.get("status").isString().stringValue());
-    passInfo.setStatus(status);
-    return passInfo;
   }
 }

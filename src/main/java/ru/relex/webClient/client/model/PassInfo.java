@@ -2,6 +2,8 @@ package ru.relex.webClient.client.model;
 
 import java.util.Date;
 
+import com.google.gwt.json.client.JSONObject;
+
 public class PassInfo {
 
 	public static enum UserStatus {
@@ -102,5 +104,18 @@ public class PassInfo {
 				+ lastName + ", status=" + status + ", passTime=" + passTime
 				+ "]";
 	}
+
+  public static PassInfo fromJSONObject(JSONObject json) {
+    PassInfo passInfo = new PassInfo();
+    passInfo.setId((int) json.get("id").isNumber().doubleValue());
+    passInfo.setFirstName(json.get("firstName").isString().stringValue());
+    passInfo.setLastName(json.get("lastName").isString().stringValue());
+    passInfo.setMiddleName(json.get("middleName").isString().stringValue());
+    double time = json.get("passTime").isNumber().doubleValue();
+    passInfo.setPassTime(new Date((new Double(time)).longValue()));
+    UserStatus status = UserStatus.mvalueOf(json.get("status").isString().stringValue());
+    passInfo.setStatus(status);
+    return passInfo;
+  }
 
 }
