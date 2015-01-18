@@ -36,13 +36,20 @@
 	.blockStyle {
 		padding: 3px;
 	}
+	.scrollPanel {
+		height: 245px;
+		overflow-y: auto;
+	}
 	</ui:style>
 	<g:HorizontalPanel width="100%" height="100%" spacing="4">
 		<g:cell width="33%" styleName="{style.blockStyle}">
 			<g:VerticalPanel styleName="{style.mainframe}">
-				<g:Label styleName="{style.columnHeaderAbsent}">Отошли</g:Label>
-				<a:AbsentPanel ui:field="absentPanel">
-				</a:AbsentPanel>
+				<g:cell height="27px">
+					<g:Label styleName="{style.columnHeaderAbsent}">Отошли</g:Label>
+				</g:cell>
+				<g:cell>
+					<a:AbsentPanel ui:field="absentPanel"/>
+				</g:cell>
 			</g:VerticalPanel>
 		</g:cell>
 		<g:cell width="67%" styleName="{style.blockStyle}">
@@ -51,13 +58,17 @@
 					<g:Label styleName="{style.columnHeaderUnacceptable}">Журнал неподтвержденных событий</g:Label>
 				</g:cell>
 				<g:cell width="300px">
-					<a:LogPanel ui:field="logPanel" styleName="{style.table}"></a:LogPanel>
+					<g:FlowPanel styleName="{style.scrollPanel}">
+						<a:LogPanel ui:field="logPanel" styleName="{style.table}"></a:LogPanel>
+					</g:FlowPanel>	
 				</g:cell>
 				<g:cell height="27px">
 					<g:Label styleName="{style.columnHeaderAcceptable}">Журнал подтвержденных событий</g:Label>
 				</g:cell>
 				<g:cell width="300px">
-					<a:AcceptPanel ui:field="accept"  styleName="{style.table}"></a:AcceptPanel>
+					<g:FlowPanel styleName="{style.scrollPanel}">
+						<a:AcceptPanel ui:field="accept"  styleName="{style.table}"></a:AcceptPanel>
+					</g:FlowPanel>
 				</g:cell>
 			</g:VerticalPanel>
 		</g:cell>

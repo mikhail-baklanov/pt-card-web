@@ -11,37 +11,36 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class MainView extends Composite {
 
-	private static MainViewUiBinder uiBinder = GWT
-			.create(MainViewUiBinder.class);
+  private static MainViewUiBinder uiBinder = GWT.create(MainViewUiBinder.class);
 
-	interface MainViewUiBinder extends UiBinder<Widget, MainView> {
-	}
+  interface MainViewUiBinder extends UiBinder<Widget, MainView> {
+  }
 
-	// @UiField
-	// AbsentPanel absentPanel;
-	//
-	@UiField
-	LogPanel logPanel;
+  // @UiField
+  // AbsentPanel absentPanel;
+  //
+  @UiField
+  LogPanel    logPanel;
 
-	@UiField
-	AcceptPanel accept;
+  @UiField
+  AcceptPanel accept;
 
-	public MainView() {
-		initWidget(uiBinder.createAndBindUi(this));
-		logPanel.addAcceptCallback(new AsyncCallback<PassInfo>() {
+  public MainView() {
+    initWidget(uiBinder.createAndBindUi(this));
+    logPanel.addAcceptCallback(new AsyncCallback<PassInfo>() {
 
-			@Override
-			public void onSuccess(PassInfo result) {
-				accept.addData(result);
+      @Override
+      public void onSuccess(PassInfo result) {
+        accept.addData(result);
 
-			}
+      }
 
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
+      @Override
+      public void onFailure(Throwable caught) {
+        // TODO Auto-generated method stub
 
-			}
-		});
-	}
+      }
+    });
+  }
 
 }
