@@ -113,8 +113,7 @@ public class LogPanel extends FlexTable {
     return panel;
   }
 
-  private void setupButton(Button btn, PassInfo passInfo, String status,
-      String absentType) {
+  private void setupButton(Button btn, PassInfo passInfo, String status, String absentType) {
     btn.addClickHandler(new BtnClickHandler(passInfo, status, absentType));
     btn.addStyleName(styles.actionButton());
   }
@@ -133,13 +132,13 @@ public class LogPanel extends FlexTable {
     @Override
     public void onClick(ClickEvent event) {
 
-      String request = "{\"process\":{\"id\":"
+      String request = "{\"id\":"
           + passInfo.getId()
           + ", \"status\":\""
           + newStatus
           + "\""
           + (absentType != null && absentType.trim().length() > 0 ? ",\"absentType\"=\""
-              + absentType + "\"" : "") + ", \"absentTimeMin\":30}}";
+              + absentType + "\"" : "") + ", \"absentTimeMin\":30}";
       provider.putData(request, new AsyncCallback<JSONValue>() {
 
         @Override
@@ -171,7 +170,7 @@ public class LogPanel extends FlexTable {
 
       @Override
       public void onSuccess(JSONValue result) {
-        JSONObject responce = result.isObject().get("passes_response").isObject();
+        JSONObject responce = result.isObject();
         if (responce != null) {
           long lastUpdateTime = (long) responce.get("lastUpdateTime").isNumber().doubleValue();
           if (lastUpdateTime > 0)

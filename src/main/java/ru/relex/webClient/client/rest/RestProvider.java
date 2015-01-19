@@ -11,7 +11,7 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class RestProvider {
-  public static final String REST_URL   = "http://172.17.0.187:8080/pt-api-0.0.4-SNAPSHOT/rest";
+  public static final String REST_URL   = "http://localhost:8080/pt-api-0.0.5-SNAPSHOT/rest";
   public static final String ABSENT_URL = "/passway/absent";
   private final String       url;
 

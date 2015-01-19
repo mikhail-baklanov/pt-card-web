@@ -16,25 +16,27 @@ import com.google.gwt.resources.client.CssResource;
  */
 public interface PtStyles extends CssResource {
 
-	/**
-	 * Стиль ушедшего по рабочим делам.
-	 * 
-	 * @return имя стиля
-	 */
-	String workAbsent();
+  /**
+   * Стиль ушедшего по рабочим делам.
+   * 
+   * @return имя стиля
+   */
+  String workAbsent();
 
-	/**
-	 * Стиль ушедшего по личным делам.
-	 * 
-	 * @return имя стиля
-	 */
-	String personalAbsent();
+  /**
+   * Стиль ушедшего по личным делам.
+   * 
+   * @return имя стиля
+   */
+  String personalAbsent();
 
-	String absentWidget();
+  String absentWidget();
 
-	String absentWidgetPhoto();
+  String absentWidgetPhoto();
 
-	String absentWidgetText();
+  String absentWidgetText();
+
+  String absentFio();
 
   String secondHeader();
 
