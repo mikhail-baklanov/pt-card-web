@@ -11,7 +11,7 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class RestProvider {
-  public static final String REST_URL   = "http://localhost:8080/pt-api-0.0.5-SNAPSHOT/rest";
+  public static final String REST_URL   = "http://192.168.0.106:8080/pt-api/rest";
   public static final String ABSENT_URL = "/passway/absent";
   private final String       url;
 
@@ -42,7 +42,12 @@ public class RestProvider {
           try {
             if (response.getStatusCode() >= 200 && response.getStatusCode() < 300) {
               if (response != null && response.getText() != null && !response.getText().isEmpty())
-                callback.onSuccess(JSONParser.parseStrict(response.getText()));
+                if ("ok".equalsIgnoreCase(response.getText())) {
+                  callback.onSuccess(null);
+                }
+                else {
+                  callback.onSuccess(JSONParser.parseStrict(response.getText()));
+                }
               else {
                 callback.onSuccess(null);
               }

@@ -9,6 +9,7 @@ import ru.relex.webClient.client.rest.RestProvider;
 
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 
@@ -18,15 +19,15 @@ public class AbsentPanel extends FlowPanel {
   private Map<Integer, AbsentInfo> users = new HashMap<Integer, AbsentInfo>();
 
   public AbsentPanel() {
-    addAbsent();
-    // Timer timer = new Timer() {
-    //
-    // @Override
-    // public void run() {
-    // updateAbsentList();
-    // }
-    // };
-    // timer.scheduleRepeating(5000);
+    // addAbsent();
+    Timer timer = new Timer() {
+
+      @Override
+      public void run() {
+        updateAbsentList();
+      }
+    };
+    timer.scheduleRepeating(5000);
   }
 
   private void addAbsent() {
@@ -62,8 +63,7 @@ public class AbsentPanel extends FlowPanel {
   }
 
   private void updateAbsentList() {
-    RestProvider provider = new RestProvider("http://localhost:8080/pt-api-0.0.3-SNAPSHOT/rest"
-        + "/passway/absent");
+    RestProvider provider = new RestProvider(RestProvider.REST_URL + "/passway/absent");
     provider.getData(new AsyncCallback<JSONValue>() {
 
       @Override
@@ -72,8 +72,8 @@ public class AbsentPanel extends FlowPanel {
           int size = result.isArray().size();
           for (int i = 0; i < size; i++) {
             JSONObject obj = result.isArray().get(i).isObject();
-            JSONObject user = obj.get("absentUserInfo").isObject();
-            AbsentInfo absentInfo = AbsentInfo.fromJSONObject(user);
+            // JSONObject user = obj.get("absentUserInfo").isObject();
+            AbsentInfo absentInfo = AbsentInfo.fromJSONObject(obj);
             if (!users.containsKey(absentInfo.getUserId())) {
               users.put(absentInfo.getUserId(), absentInfo);
               if (absentInfo != null) {

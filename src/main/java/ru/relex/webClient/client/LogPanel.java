@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.relex.webClient.client.model.PassInfo;
+import ru.relex.webClient.client.model.PassInfo.UserStatus;
 import ru.relex.webClient.client.rest.RestProvider;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -72,7 +73,7 @@ public class LogPanel extends FlexTable {
   private void deleteRow(int id) {
     for (int i = 0; i < list.size(); i++) {
       if (list.get(i).getId() == id) {
-        removeRow(i);
+        removeRow(i + 1);
         list.remove(i);
         linesCount--;
         break;
@@ -131,13 +132,13 @@ public class LogPanel extends FlexTable {
 
     @Override
     public void onClick(ClickEvent event) {
-
+      passInfo.setStatus(UserStatus.mvalueOf(newStatus));
       String request = "{\"id\":"
           + passInfo.getId()
           + ", \"status\":\""
           + newStatus
           + "\""
-          + (absentType != null && absentType.trim().length() > 0 ? ",\"absentType\"=\""
+          + (absentType != null && absentType.trim().length() > 0 ? ",\"absentType\":\""
               + absentType + "\"" : "") + ", \"absentTimeMin\":30}";
       provider.putData(request, new AsyncCallback<JSONValue>() {
 
